@@ -1,0 +1,188 @@
+# Stage 4 – Gold Layer (Business-Ready Dimensions & Fact Tables)
+
+---
+
+## 1. Purpose of the Gold Layer
+
+The Gold layer represents the **business-ready and analytics-ready layer** in the Medallion Architecture.
+
+The primary purpose of this layer is to:
+- Apply business logic and calculations
+- Create simplified, analytics-friendly data models
+- Support SQL analytics, dashboards, and machine learning
+- Serve as the single source of truth for business users
+
+Unlike the Silver layer, the Gold layer is **optimized for consumption**, not raw processing.
+
+---
+
+## 2. Input to the Gold Layer
+
+The Gold layer reads data exclusively from the **Silver Delta tables**, including:
+- Cleaned dimension tables
+- Standardized fact table with currency-normalized revenue values
+
+Both **historical data (2024)** and **incremental data (2025)** are processed using the same logic to ensure consistency.
+
+---
+
+## 3. Gold Layer – Dimension Tables
+
+### 3.1 Why Gold Dimensions Are Needed
+
+Gold dimensions are designed to:
+- Simplify analytical queries
+- Reduce complex joins
+- Present business-friendly views of entities
+
+They act as **reference entities** for dashboards and machine learning.
+
+---
+
+### 3.2 Merging Product and Subscription Dimensions
+
+In the Gold layer, **Product and Subscription dimensions are merged into a single unified dimension**.
+
+#### Business Reasoning:
+- Subscriptions are always associated with a product
+- Treating them separately increases join complexity
+- Business users think in terms of offerings, not technical entities
+
+#### Benefits:
+- Simplified analytical queries
+- Improved query performance
+- Easier interpretation by business stakeholders
+
+The merged dimension provides a **single view of telecom offerings**.
+
+---
+
+### 3.3 Other Gold Dimension Tables
+
+The following dimension tables are created in the Gold layer:
+- `gold_dim_account`
+- `gold_dim_operating_country`
+- `gold_dim_date`
+
+Each dimension:
+- Contains a surrogate key
+- Stores clean, descriptive attributes
+- Is optimized for joins with the fact table
+
+---
+
+## 4. Gold Layer – Fact Table
+
+### 4.1 Purpose of the Gold Fact Table
+
+The Gold fact table represents **business-measurable subscription revenue metrics**.
+
+It is designed to:
+- Support KPI calculations
+- Enable SQL analytics and dashboards
+- Provide features for machine learning models
+
+---
+
+### 4.2 Calculated Business Columns
+
+The following calculated columns are added in the Gold fact table:
+
+- **One-off Revenue (USD)**  
+  Standardized one-time charges converted to USD
+
+- **Recurring Revenue (USD)**  
+  Standardized recurring charges converted to USD
+
+- **Total Contract Value (USD)**  
+  Contract-level revenue converted to USD
+
+- **Total Revenue (USD)**  
+  Combined revenue used for analytics and ML
+
+- **Revenue Type**  
+  Classification of subscriptions as:
+  - One-Time
+  - Recurring
+  - Mixed
+
+- **Recurring Flag**  
+  Indicates whether a subscription contains recurring revenue
+
+These columns eliminate the need for repeated calculations in dashboards and ML pipelines.
+
+---
+
+### 4.3 Surrogate Keys and Referential Integrity
+
+The Gold fact table:
+- Uses surrogate keys from Gold dimension tables
+- Maintains referential integrity across all dimensions
+- Enables efficient joins and query performance
+
+This design aligns with **star-schema best practices**.
+
+---
+
+## 5. Incremental Processing Using Delta Lake
+
+The Gold layer supports incremental updates using **Delta Lake MERGE and UPSERT operations**.
+
+Key behaviors:
+- New records from 2025 are merged into existing Gold tables
+- Existing records are updated only when changes are detected
+- Historical data from 2024 remains unchanged
+
+This ensures:
+- ACID-compliant transactions
+- Data consistency
+- Scalable production processing
+
+---
+
+## 6. Why Business Logic Belongs in Gold
+
+Business logic is applied in the Gold layer because:
+- Silver focuses on data correctness and standardization
+- Gold focuses on business meaning and usability
+- Changes to business rules do not affect raw or cleaned data
+
+This separation improves maintainability and flexibility.
+
+---
+
+## 7. Gold Layer Output
+
+The Gold layer produces:
+- Business-friendly dimension tables
+- An analytics-ready fact table
+- ML-ready features for model training
+- A single trusted source for dashboards and insights
+
+All Gold tables are stored in **Delta format**.
+
+---
+
+## 8. How Gold Supports Analytics and Machine Learning
+
+The Gold layer enables:
+- SQL queries without complex transformations
+- Direct feature extraction for ML models
+- Consistent metrics across analytics and AI
+- Faster dashboard performance
+
+This ensures alignment between analytics, AI, and business decisions.
+
+---
+
+## 9. Summary
+
+The Gold layer transforms cleaned data into **actionable business assets**.
+
+By applying calculated metrics, merging related dimensions, and supporting incremental updates, this layer:
+- Simplifies analytics
+- Improves performance
+- Enables reliable AI-driven insights
+- Serves as the foundation for dashboards and machine learning
+
+---
