@@ -1,0 +1,148 @@
+# Stage 6 – Orchestration & Job Scheduling (Databricks Jobs)
+
+---
+
+## 1. Purpose of Orchestration
+
+Orchestration is responsible for **automating the execution of the entire data pipeline** in a reliable and repeatable manner.
+
+The goal of this stage is to:
+- Eliminate manual execution of notebooks
+- Ensure tasks run in the correct order
+- Support incremental data ingestion
+- Enable production-style automation
+
+Orchestration transforms the project from a collection of notebooks into a **single automated system**.
+
+---
+
+## 2. Orchestration Tool Used
+
+This project uses **Databricks Jobs** for orchestration.
+
+Databricks Jobs provides:
+- Multi-task workflows
+- Task dependency management
+- Parameterized execution
+- Scheduling and monitoring
+- Failure handling and retries
+
+---
+
+## 3. Workflow Design Overview
+
+The orchestration workflow is designed as a **multi-task job** with clearly defined dependencies.
+
+Each task represents a logical stage in the data pipeline and executes only after the successful completion of its predecessor.
+
+---
+
+## 4. Orchestrated Task Flow
+
+The Databricks Job executes the following tasks in sequence:
+
+1. **Bronze Layer Ingestion**
+   - Ingests raw dimension and fact data
+   - Appends new files without modifying existing data
+
+2. **Silver Layer Transformations**
+   - Cleans and standardizes dimension tables
+   - Applies validation and currency conversion to fact tables
+   - Removes duplicates and invalid records
+
+3. **Gold Layer Transformations**
+   - Creates analytics-ready dimension tables
+   - Applies business logic and calculated columns
+   - Maintains surrogate keys and referential integrity
+
+4. **MLflow – Revenue Prediction**
+   - Reads features from Gold fact tables
+   - Trains and evaluates the regression model
+   - Logs experiments and model artifacts
+
+5. **MLflow – Customer Segmentation**
+   - Performs clustering using revenue-based features
+   - Assigns cluster labels to subscriptions
+   - Stores segmentation results back to Delta tables
+
+Each task is dependent on the successful completion of the previous task.
+
+---
+
+## 5. Incremental Data Processing
+
+The orchestration workflow supports **incremental data ingestion**, particularly for new data arriving in 2025 and beyond.
+
+Key behaviors:
+- New files added to the input directory are automatically processed
+- Delta Lake MERGE and UPSERT operations ensure only new or changed records are applied
+- Historical data from 2024 remains unchanged
+- Duplicate processing is avoided
+
+This demonstrates a **production-style incremental pipeline**, not a one-time batch process.
+
+---
+
+## 6. Job Triggering and Scheduling
+
+The Databricks Job can be:
+- Triggered manually for testing and validation
+- Scheduled to run at defined intervals
+- Extended to event-based triggering when new data arrives
+
+This flexibility ensures the pipeline can adapt to operational requirements.
+
+---
+
+## 7. Error Handling and Reliability
+
+Databricks Jobs provides built-in reliability features:
+- Task-level failure detection
+- Automatic retries for transient failures
+- Clear logging and execution history
+
+If a task fails:
+- Downstream tasks do not execute
+- The failure can be investigated and corrected without partial processing
+
+This ensures data consistency and operational stability.
+
+---
+
+## 8. Why Orchestration Is Critical for Business
+
+Orchestration ensures:
+- Data is always processed in the correct order
+- Dashboards and ML outputs reflect the latest data
+- Manual operational effort is minimized
+- The platform can scale as data volume and frequency increase
+
+Business teams can rely on **timely and consistent insights** without manual intervention.
+
+---
+
+## 9. How This Goes Beyond a Demo
+
+This orchestration setup:
+- Mirrors real-world production pipelines
+- Supports incremental data growth
+- Enables continuous AI model execution
+- Provides a foundation for future automation enhancements
+
+The project demonstrates **operational maturity**, not just technical capability.
+
+---
+
+## 10. Summary
+
+The orchestration stage ties together all components of the Lakehouse platform.
+
+By automating ingestion, transformation, machine learning, and updates using Databricks Jobs, this stage ensures the solution is:
+- Reliable
+- Scalable
+- Repeatable
+- Production-ready
+
+Orchestration is the backbone that enables the platform to operate as a single, unified system.
+
+---
