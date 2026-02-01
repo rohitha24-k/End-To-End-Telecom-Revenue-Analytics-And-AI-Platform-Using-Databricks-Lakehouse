@@ -1,0 +1,194 @@
+# Stage 7 – SQL Dashboards & Business Insights
+
+---
+
+## 1. Purpose of the Analytics & Dashboard Layer
+
+The Analytics and Dashboard layer represents the **final consumption layer** of the Lakehouse platform.
+
+The purpose of this stage is to:
+- Convert curated Gold data into actionable business insights
+- Enable self-service analytics for business users
+- Provide clear visibility into revenue performance, customer value, and regional trends
+- Ensure consistency between analytics and machine learning outputs
+
+All analytics in this stage are powered directly by **Gold-layer Delta tables**, ensuring a single source of truth.
+
+---
+
+## 2. Analytics Approach
+
+This project uses:
+- **Databricks SQL** for analytical querying
+- **SQL Warehouses** for performance and scalability
+- **Dashboards** for business-friendly visualization
+
+No additional transformations are performed at this stage.  
+All calculations and metrics are derived from **Gold fact and dimension tables**.
+
+---
+
+## 3. Dashboard Overview
+
+The dashboards are designed to answer **key business questions**, not just to display charts.
+
+The analytics focus on:
+- Revenue trends over time
+- Regional revenue contribution
+- Subscription revenue composition
+- Identification of high-value customers
+
+Each dashboard element is backed by a dedicated SQL query.
+
+---
+
+## 4. Key SQL Queries and Insights
+
+---
+
+### 4.1 Revenue Trend Over Time
+
+**Business Question:**  
+How does total subscription revenue change over time?
+
+**Description:**  
+This analysis aggregates total revenue by month and year to identify growth patterns and seasonality.
+
+**Key Insight:**  
+- **April 2025 recorded the highest revenue**, reaching approximately **69 million USD**.
+
+**Business Value:**  
+- Helps leadership identify peak revenue periods  
+- Supports sales planning and performance benchmarking  
+- Assists in forecasting and capacity planning  
+
+---
+
+### 4.2 Revenue by Operating Country
+
+**Business Question:**  
+Which operating countries contribute the most to total revenue?
+
+**Description:**  
+This analysis aggregates revenue by operating country to compare regional performance.
+
+**Key Insight:**  
+- **LTZ – Liquid Telecom Zimbabwe** is the top-performing region with approximately **99.49 million USD** in revenue.
+
+**Business Value:**  
+- Enables regional investment prioritization  
+- Supports infrastructure expansion decisions  
+- Helps management focus on high-performing markets  
+
+---
+
+### 4.3 Subscription Revenue Overview (Revenue Mix)
+
+**Business Question:**  
+How is revenue distributed across different subscription types?
+
+**Description:**  
+Subscriptions are grouped by revenue type:
+- One-Time
+- Recurring
+- Mixed
+- Unknown
+
+**Key Insights:**
+- **One-Time subscriptions**:  
+  - 2,860 subscriptions  
+  - ~90.54 million USD (highest revenue contribution)
+- **Mixed subscriptions**:  
+  - 9,776 subscriptions  
+  - ~58.59 million USD
+- **Recurring subscriptions**:  
+  - 9,688 subscriptions  
+  - ~25.44 million USD
+- **Unknown**:  
+  - 307 subscriptions  
+
+**Business Value:**  
+- Highlights the trade-off between high-value one-time contracts and stable recurring revenue  
+- Supports pricing strategy optimization  
+- Helps balance short-term revenue with long-term stability  
+
+---
+
+### 4.4 Top 10 Revenue-Generating Accounts
+
+**Business Question:**  
+Who are the most valuable customers?
+
+**Description:**  
+This analysis ranks customer accounts by total revenue contribution.
+
+**Key Insight:**  
+- **Eco Cash Holdings** is the top revenue-generating account, contributing approximately **64.62 million USD**.
+
+**Business Value:**  
+- Enables key account prioritization  
+- Supports customer retention and relationship management  
+- Helps sales teams focus on high-impact clients  
+
+---
+
+## 5. Dashboard Design Principles
+
+The dashboards follow these principles:
+- Simple and intuitive visualizations
+- Clear business interpretation
+- Consistent metrics across all views
+- Minimal cognitive load for decision-makers
+
+Charts are designed to be:
+- Executive-friendly
+- Analyst-ready
+- Reusable for recurring reviews
+
+---
+
+## 6. Relationship Between Dashboards and Machine Learning
+
+Dashboards and ML outputs are tightly integrated:
+- Dashboards explain *what is happening*
+- ML models explain *why it may happen* and *what to expect next*
+
+For example:
+- Revenue trends are visualized through SQL
+- Future revenue expectations are supported by ML predictions
+- Customer segments from clustering can be used for targeted analysis
+
+This ensures analytics and AI work together rather than in isolation.
+
+---
+
+## 7. Business Impact of Analytics
+
+The SQL dashboards enable:
+- Faster decision-making
+- Improved revenue visibility
+- Better regional and customer prioritization
+- Alignment between data engineering, analytics, and AI outputs
+
+Business users can access insights without needing technical knowledge of the underlying pipeline.
+
+---
+
+## 8. Summary
+
+The analytics and dashboard stage transforms curated Gold data into **actionable business intelligence**.
+
+By combining:
+- Trusted Gold-layer data
+- Well-designed SQL queries
+- Business-focused dashboards
+
+this stage ensures that insights generated by the platform are:
+- Accurate
+- Timely
+- Consistent
+- Directly aligned with business objectives
+
+This completes the end-to-end Lakehouse solution from raw data ingestion to AI-driven and insight-driven decision-making.
+
+---
