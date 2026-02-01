@@ -1,0 +1,152 @@
+# Stage 2 – Bronze Layer (Raw Data Ingestion)
+
+---
+
+## 1. Purpose of the Bronze Layer
+
+The Bronze layer represents the **raw ingestion layer** in the Medallion Architecture.
+
+The primary purpose of this layer is to:
+- Ingest data exactly as received from the source
+- Preserve the original structure and values
+- Enable traceability and auditability
+- Support incremental file ingestion without data loss
+
+No business transformations, aggregations, or corrections are applied in this layer.
+
+The Bronze layer acts as the **system of record** for all incoming data.
+
+---
+
+## 2. Data Sources
+
+The data ingested into the Bronze layer is provided in **CSV format** and represents telecom subscription and revenue data.
+
+The data arrives in two logical categories:
+- **Dimension-related data**
+- **Fact (transactional) data**
+
+The project uses:
+- **2024 data** as historical data
+- **2025 data** to demonstrate incremental ingestion
+
+New files can be added to the input directory at any time and will be picked up by the pipeline.
+
+---
+
+## 3. Bronze Layer Design Principles
+
+The following principles are strictly followed in the Bronze layer:
+
+1. **No data modification**
+   - Column names, data types, and values are preserved as-is.
+2. **Append-only ingestion**
+   - New data files are appended without overwriting existing data.
+3. **Schema evolution support**
+   - New columns can be added safely if future data changes.
+4. **Delta Lake storage**
+   - All Bronze tables are stored in Delta format for reliability and ACID compliance.
+
+---
+
+## 4. Bronze Layer Tables Overview
+
+The Bronze layer contains **raw versions of both dimension and fact tables**.
+
+### 4.1 Bronze Dimension Tables
+
+The following dimension tables are ingested into the Bronze layer:
+
+- **bronze_dim_product**
+  - Contains raw product information
+  - Includes product names and subscription-related attributes
+
+- **bronze_dim_subscription**
+  - Contains raw subscription details
+  - Includes subscription identifiers and descriptions
+
+- **bronze_dim_account**
+  - Contains customer account information
+  - Includes account names, account numbers, and creation dates
+
+- **bronze_dim_operating_country**
+  - Contains operating country details
+  - Includes country codes and organization names
+
+- **bronze_dim_date**
+  - Contains raw date fields
+  - Includes account creation dates and order dates
+
+Each dimension table is stored exactly as received from the source files.
+
+---
+
+### 4.2 Bronze Fact Table
+
+- **bronze_fact_subscription_revenue**
+
+This table contains raw transactional revenue data, including:
+- Product identifiers
+- Account identifiers
+- Currency
+- One-off price
+- Recurring price
+- Total contract value
+- Account created date
+- Order date
+
+No currency conversion or revenue calculations are performed in the Bronze layer.
+
+---
+
+## 5. Incremental Ingestion Strategy
+
+The Bronze layer supports **incremental ingestion** using file-based processing.
+
+Key characteristics:
+- Each new file added to the input directory is treated as new data
+- Existing records are not modified or deduplicated
+- Historical data (2024) and incremental data (2025) coexist safely
+
+This design ensures:
+- Data lineage is preserved
+- Reprocessing is avoided
+- Downstream layers can apply controlled transformations
+
+---
+
+## 6. Why No Transformations Are Applied in Bronze
+
+Transformations are intentionally avoided in the Bronze layer to ensure:
+
+- Full traceability of raw data
+- Ability to reprocess data if transformation logic changes
+- Clear separation of concerns between ingestion and transformation
+
+All data cleaning, validation, and business logic are deferred to the **Silver layer**.
+
+---
+
+## 7. Output of the Bronze Layer
+
+The output of the Bronze layer is:
+- Raw Delta tables for dimensions and facts
+- A reliable foundation for Silver-layer transformations
+- A persistent record of all ingested source data
+
+These Bronze tables serve as the **input source** for the Silver layer.
+
+---
+
+## 8. Summary
+
+The Bronze layer establishes a **stable and auditable foundation** for the entire Lakehouse pipeline.
+
+By preserving raw data and supporting incremental ingestion, this layer ensures:
+- Data reliability
+- Schema flexibility
+- Production-ready ingestion
+
+All downstream analytics, machine learning, and dashboards depend on the integrity of this layer.
+
+---
