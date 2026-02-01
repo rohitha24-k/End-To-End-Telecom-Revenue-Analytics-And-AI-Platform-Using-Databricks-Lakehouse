@@ -1,0 +1,240 @@
+# Stage 5 – Machine Learning with MLflow (AI Use Cases)
+
+---
+
+## 1. Purpose of the Machine Learning Stage
+
+The Machine Learning stage focuses on **transforming cleaned and business-ready data into predictive and strategic insights**.
+
+The objective of this stage is to:
+- Apply AI models on Gold-level data
+- Generate insights that cannot be achieved using rule-based logic
+- Track experiments, models, and results using MLflow
+- Integrate AI outputs back into the data platform
+
+This stage demonstrates **thoughtful application of AI**, not just model training.
+
+---
+
+## 2. Why ML Is Applied on Gold Tables
+
+All machine learning models in this project use **Gold-layer Delta tables** as their data source.
+
+This is done because:
+- Gold tables are clean, standardized, and business-ready
+- Revenue values are already converted to USD
+- Calculated columns eliminate the need for repeated preprocessing
+- Analytics and ML use the same trusted source of truth
+
+This ensures **consistency between dashboards and AI outputs**.
+
+---
+
+## 3. MLflow Overview
+
+MLflow is used in this project to:
+- Track machine learning experiments
+- Log model parameters and results
+- Compare different runs
+- Ensure reproducibility of models
+
+Each AI use case is tracked as a separate MLflow experiment.
+
+---
+
+## 4. AI Use Case 1 – Revenue Prediction (Regression)
+
+### 4.1 Problem Definition
+
+The first AI use case focuses on **predicting total subscription revenue in USD**.
+
+This is a **regression problem** because:
+- The output is a continuous numeric value
+- Revenue varies across subscriptions and customers
+
+### Business Objective:
+- Improve revenue forecasting
+- Support pricing and financial planning
+- Reduce reliance on manual estimates
+
+---
+
+### 4.2 Input Features
+
+The model uses the following features extracted from the Gold fact table:
+- One-off revenue (USD)
+- Recurring revenue (USD)
+- Contract-related revenue values
+
+These features represent the primary drivers of telecom subscription revenue.
+
+---
+
+### 4.3 Model Selection and Reasoning
+
+A **Linear Regression model** is used as a baseline model.
+
+Reasons for choosing Linear Regression:
+- Simple and interpretable
+- Easy to explain to business stakeholders
+- Provides a strong reference point for performance
+- Suitable when transparency is preferred over black-box accuracy
+
+The goal is to **understand revenue behavior**, not maximize complexity.
+
+---
+
+### 4.4 Training and Evaluation
+
+- The dataset is split into training and test sets
+- The model is trained on historical data
+- Predictions are generated on test data
+- Performance is evaluated by comparing actual vs predicted revenue
+
+Visualization is used to assess:
+- Alignment between actual and predicted values
+- Generalization of the model
+
+---
+
+### 4.5 MLflow Tracking
+
+MLflow tracks:
+- Model type and parameters
+- Training runs
+- Evaluation results
+- Model artifacts
+
+This enables:
+- Experiment comparison
+- Reproducibility
+- Transparent model evaluation
+
+---
+
+### 4.6 Output and Business Interpretation
+
+The output of this use case is:
+- Predicted total revenue for subscriptions
+
+Business interpretation:
+- Close alignment between actual and predicted values indicates reliable forecasting
+- Predictions can be used to validate pricing strategies and future revenue expectations
+
+---
+
+### 4.7 Limitations
+
+- Linear Regression assumes linear relationships
+- It may not capture complex non-linear revenue patterns
+
+Despite this, it provides a **clear and interpretable baseline** suitable for business use.
+
+---
+
+## 5. AI Use Case 2 – Customer Segmentation (Clustering)
+
+---
+
+### 5.1 Problem Definition
+
+The second AI use case focuses on **segmenting subscriptions based on revenue behavior**.
+
+This is an **unsupervised learning problem** because:
+- There are no predefined labels for customer value
+- The goal is to discover natural groupings in the data
+
+---
+
+### 5.2 Input Features
+
+The clustering model uses:
+- One-off revenue (USD)
+- Recurring revenue (USD)
+- Total revenue (USD)
+
+These features capture the financial behavior of subscriptions.
+
+---
+
+### 5.3 Model Selection and Reasoning
+
+**K-Means clustering** is selected because:
+- It is simple and scalable
+- Works well with numerical data
+- Produces clear and interpretable clusters
+
+The number of clusters is set to **three** to represent:
+- Low-value subscriptions
+- Medium-value subscriptions
+- High-value subscriptions
+
+---
+
+### 5.4 Training and Evaluation
+
+- The model groups subscriptions based on revenue characteristics
+- Cluster quality is evaluated visually by observing separation between clusters
+- Clear separation indicates meaningful segmentation
+
+The focus is on **interpretability and actionability**, not mathematical optimization.
+
+---
+
+### 5.5 Output and Business Interpretation
+
+The output of clustering includes:
+- A cluster label assigned to each subscription
+
+Business interpretation:
+- High-value clusters represent enterprise customers with large or stable revenue
+- Medium-value clusters indicate upsell opportunities
+- Low-value clusters may require cost optimization or different pricing strategies
+
+---
+
+### 5.6 Business Value of Clustering
+
+Customer segmentation enables:
+- Targeted retention strategies
+- Differentiated pricing models
+- Prioritization of sales and account management efforts
+
+This moves the solution beyond analysis into **decision support**.
+
+---
+
+### 5.7 Limitations
+
+- K-Means requires the number of clusters to be predefined
+- Assumes clusters are spherical
+
+These limitations are acceptable given the simplicity and clarity required for business use.
+
+---
+
+## 6. Storing ML Outputs Back to the Platform
+
+The outputs of both ML use cases are:
+- Written back to Delta tables
+- Made available for dashboards and reporting
+- Reusable for future analysis and model retraining
+
+This ensures:
+- End-to-end integration between data engineering and AI
+- Reusability of AI results
+- Transparency in decision-making
+
+---
+
+## 7. Summary
+
+This stage demonstrates how AI is applied thoughtfully using:
+- Clean and standardized Gold data
+- Interpretable baseline models
+- MLflow for experiment tracking
+- Clear linkage between predictions and business decisions
+
+The machine learning layer enhances the platform by providing **predictive and strategic insights**, not just descriptive analytics.
+
+---
