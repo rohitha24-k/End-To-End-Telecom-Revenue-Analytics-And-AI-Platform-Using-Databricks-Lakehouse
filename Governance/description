@@ -1,0 +1,172 @@
+# Data Governance & Access Control (Unity Catalog)
+
+---
+
+## 1. Purpose of Governance in This Project
+
+Data governance ensures that data is:
+- Secure
+- Trusted
+- Accessible only to authorized users
+- Compliant with organizational policies
+
+In an enterprise telecom environment, revenue and customer data is highly sensitive.  
+Therefore, governance is a **critical requirement**, not an optional feature.
+
+This project implements governance using **Databricks Unity Catalog**.
+
+---
+
+## 2. Governance Tool Used: Unity Catalog
+
+Unity Catalog is used as the **central governance layer** for:
+
+- Data access control
+- Object-level permissions
+- Centralized metadata management
+- Secure collaboration between teams
+
+Unity Catalog governs access across:
+- Catalogs
+- Schemas
+- Tables
+- Views
+
+---
+
+## 3. Governance Structure
+
+The governance hierarchy used in this project follows the standard Unity Catalog structure:
+
+- **Catalog**: `liquid_telecom`
+- **Schemas**:
+  - `bronze`
+  - `silver`
+  - `gold`
+
+Each schema contains Delta tables relevant to its Medallion layer.
+
+This structure enforces **clear separation of responsibilities** across data layers.
+
+---
+
+## 4. User Roles Defined
+
+To demonstrate real-world governance, two logical user roles are defined:
+
+### 4.1 Data Engineer Role
+
+**Responsibilities:**
+- Build and maintain data pipelines
+- Perform transformations
+- Manage incremental loads
+- Maintain ML workflows
+
+**Required Permissions:**
+- Read and write access on Bronze, Silver, and Gold layers
+- Ability to insert, update, and merge data
+- Ability to manage tables required for pipeline execution
+
+---
+
+### 4.2 Data Analyst Role
+
+**Responsibilities:**
+- Run SQL queries
+- Build dashboards
+- Analyze business performance
+- Consume ML outputs
+
+**Required Permissions:**
+- Read-only access to Gold-layer tables
+- No access to modify data
+- No access to Bronze or Silver layers
+
+This separation ensures **data integrity and controlled access**.
+
+---
+
+## 5. Access Control Implementation
+
+### 5.1 Data Engineer Permissions
+
+Data Engineers are granted:
+- SELECT, INSERT, UPDATE privileges on:
+  - Silver schema tables
+  - Gold schema tables
+- SELECT privileges on Bronze schema tables
+
+This allows engineers to:
+- Read raw data
+- Transform and clean data
+- Maintain business-ready datasets
+
+---
+
+### 5.2 Data Analyst Permissions
+
+Data Analysts are granted:
+- SELECT privileges only on:
+  - Gold schema tables
+  - Gold-level views (if created)
+
+They cannot:
+- Modify data
+- Access raw or intermediate layers
+- Perform write operations
+
+This ensures analysts work only with **trusted, curated data**.
+
+---
+
+## 6. Why Layer-Based Governance Is Important
+
+Applying governance at the schema and table level ensures:
+
+- Raw data is protected from accidental misuse
+- Intermediate transformation logic remains controlled
+- Business users interact only with validated data
+- Compliance and auditability are maintained
+
+This model aligns with **enterprise data governance best practices**.
+
+---
+
+## 7. Governance Benefits to the Business
+
+The governance model implemented in this project provides:
+
+- Secure handling of sensitive revenue and customer data
+- Clear accountability between engineering and analytics teams
+- Reduced risk of data corruption
+- Increased trust in analytics and AI outputs
+
+Business users can confidently rely on insights knowing the data is protected and controlled.
+
+---
+
+## 8. Governance and AI Integration
+
+Governance also plays a key role in AI workflows:
+
+- ML models read data only from governed Gold tables
+- Predictions written back to tables remain protected
+- Access to AI outputs is controlled based on role
+
+This ensures AI insights are **secure, auditable, and reusable**.
+
+---
+
+## 9. Summary
+
+Governance is a foundational pillar of this Lakehouse solution.
+
+By implementing Unity Catalog with role-based access control:
+- Data is secured across all layers
+- Teams collaborate safely
+- Analytics and AI operate on trusted data
+- The platform meets enterprise-grade governance standards
+
+This completes the end-to-end implementation of a **secure, scalable, and production-ready Databricks Lakehouse platform**.
+
+---
