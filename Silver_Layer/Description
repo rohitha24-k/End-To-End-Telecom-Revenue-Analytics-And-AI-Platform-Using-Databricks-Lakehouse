@@ -1,0 +1,203 @@
+# Stage 3 – Silver Layer (Data Cleaning, Standardization & Transformation)
+
+---
+
+## 1. Purpose of the Silver Layer
+
+The Silver layer represents the **cleaned and standardized layer** in the Medallion Architecture.
+
+The primary purpose of this layer is to:
+- Improve data quality
+- Apply validation and standardization rules
+- Prepare data for analytics and machine learning
+- Maintain consistency across dimensions and fact tables
+
+Unlike the Bronze layer, the Silver layer **applies transformations**, but still avoids heavy aggregations or business KPIs.
+
+The Silver layer acts as a **refined but still granular dataset**.
+
+---
+
+## 2. Input to the Silver Layer
+
+The Silver layer reads data exclusively from the **Bronze Delta tables**.
+
+These include:
+- Bronze dimension tables (Product, Subscription, Account, Operating Country, Date)
+- Bronze fact table (Subscription Revenue)
+
+Both **historical data (2024)** and **incremental data (2025)** flow into the Silver layer using the same logic.
+
+---
+
+## 3. Silver Layer Design Principles
+
+The following principles guide all Silver-layer transformations:
+
+1. **Data correctness**
+   - Ensure correct data types and formats
+2. **Standardization**
+   - Enforce consistent naming and values
+3. **Deduplication**
+   - Remove duplicate records created during ingestion
+4. **Null and invalid data handling**
+   - Replace or remove invalid values
+5. **No aggregation**
+   - Preserve row-level granularity
+
+---
+
+## 4. Silver Layer – Dimension Tables
+
+### 4.1 Data Type Conversion
+
+All dimension tables undergo data type normalization, including:
+- Converting date columns to proper `DATE` format
+- Converting numeric identifiers to consistent numeric types
+- Ensuring string fields are properly trimmed and standardized
+
+This ensures dimensions can be safely joined with fact tables.
+
+---
+
+### 4.2 Duplicate Removal
+
+Duplicate records are identified and removed based on natural business keys such as:
+- Product name
+- Subscription name
+- Account number
+- Operating country code
+
+This ensures **one unique record per business entity**.
+
+---
+
+### 4.3 Handling Null and Empty Values
+
+- Rows with critical missing identifiers are removed
+- Non-critical missing values are standardized using placeholders (e.g., “Not Available”)
+- Empty strings are trimmed and converted to NULL where appropriate
+
+---
+
+### 4.4 Text Standardization
+
+Text columns are standardized to improve consistency, including:
+- Trimming leading and trailing spaces
+- Applying consistent capitalization
+- Removing unwanted prefixes or suffixes
+
+This prevents data duplication caused by formatting inconsistencies.
+
+---
+
+### 4.5 Output Silver Dimension Tables
+
+The following cleaned dimension tables are created:
+- `silver_dim_product`
+- `silver_dim_subscription`
+- `silver_dim_account`
+- `silver_dim_operating_country`
+- `silver_dim_date`
+
+These tables are written in **Delta format** and act as trusted reference data.
+
+---
+
+## 5. Silver Layer – Fact Table
+
+### 5.1 Data Validation
+
+The fact table undergoes multiple validation checks:
+- Removal of rows where all revenue values are zero
+- Removal of invalid or incomplete records
+- Verification of foreign key references to dimension tables
+
+---
+
+### 5.2 Currency Standardization
+
+The Bronze fact table contains revenue values in multiple currencies such as:
+- USD
+- EUR
+- ZAR
+- KES
+- UGX
+- NGN and others
+
+In the Silver layer:
+- Exchange rates are applied
+- All revenue values are converted to **USD**
+- Original currency values are retained for traceability
+
+This enables accurate cross-region revenue comparison.
+
+---
+
+### 5.3 Revenue Column Normalization
+
+The following revenue columns are standardized:
+- One-off price
+- Recurring price
+- Total contract value
+
+Each is converted to numeric format and validated for correctness.
+
+---
+
+### 5.4 Output Silver Fact Table
+
+The cleaned fact table is stored as:
+- `silver_fact_subscription_revenue`
+
+This table retains row-level detail and is fully standardized for downstream use.
+
+---
+
+## 6. Incremental Processing in the Silver Layer
+
+The Silver layer supports **incremental updates** using Delta Lake MERGE operations.
+
+Key behaviors include:
+- New records from 2025 are merged into existing Silver tables
+- Historical data from 2024 remains unchanged
+- Duplicate processing is avoided
+
+This ensures scalability and production readiness.
+
+---
+
+## 7. Why Transformations Are Applied in Silver and Not Bronze
+
+Transformations are intentionally deferred from Bronze to Silver because:
+- Bronze must preserve raw data for audit and replay
+- Silver provides a controlled environment for applying business rules
+- Changes to transformation logic do not affect raw data
+
+This separation ensures **data reliability and flexibility**.
+
+---
+
+## 8. Output of the Silver Layer
+
+The Silver layer outputs:
+- Cleaned and standardized dimension tables
+- A validated, currency-normalized fact table
+- Delta tables ready for analytics, machine learning, and Gold-layer processing
+
+These Silver tables act as the **foundation for business-ready Gold tables**.
+
+---
+
+## 9. Summary
+
+The Silver layer plays a critical role in ensuring data quality.
+
+By applying data cleaning, standardization, validation, and currency normalization, this layer ensures:
+- Consistent joins across dimensions and facts
+- Reliable analytics and ML inputs
+- Scalable incremental processing
+
+The Silver layer bridges raw ingestion and business-ready analytics.
+
+---
