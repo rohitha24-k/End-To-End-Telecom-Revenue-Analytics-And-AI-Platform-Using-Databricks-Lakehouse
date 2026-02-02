@@ -81,17 +81,13 @@ This solution is designed as a **production-style system**, not a one-time analy
 
 The dataset represents **enterprise telecom subscription and revenue data**.
 
-### Key attributes include:
-- Product information  
-- Subscription details  
-- Customer account details  
-- Operating country  
-- One-off price  
-- Recurring price  
-- Total contract value  
-- Currency  
-- Account creation date  
-- Order date  
+### Tables and Key attributes include:
+- dimension_Product information (product_id, product_name, subscription_id)
+- dimension_Subscription details (subscription_id, subscription_name) 
+- dimension_Customer account details ( account_id, account_name) 
+- dimension_Operating country (country_id, operating_country)
+- dimension_date (date_key, date, month_name, year)  
+- fact_subscription_revenue (product_id, account_id, operating_country, one_off_price, total_recurring_amount, total_contract_price, account_created_date, order_date)
 
 ### Data Timeline:
 - **2024 data** is treated as historical data  
